@@ -129,7 +129,7 @@ packages:
         - '--path'
         - '@THIS_SOURCE_DIR@'
         - '--root'
-        - '@THIS_COLLECT_DIR@'
+        - '@THIS_COLLECT_DIR@/usr'
         - '-j@PARALLELISM@'
         environ: # Required to build libgit2
           CC: x86_64-managarm-gcc
@@ -453,8 +453,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/BurntSushi/ripgrep.git'
-      tag: '12.1.1'
-      version: '12.1.1'
+      tag: '13.0.0'
+      version: '13.0.0'
     tools_required:
       - host-cargo
     sources_required:
@@ -471,7 +471,7 @@ packages:
         - '--path'
         - '@THIS_SOURCE_DIR@'
         - '--root'
-        - '@THIS_COLLECT_DIR@'
+        - '@THIS_COLLECT_DIR@/usr'
         - '-j@PARALLELISM@'
 
   - name: util-linux
