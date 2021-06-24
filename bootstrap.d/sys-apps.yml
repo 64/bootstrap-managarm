@@ -597,6 +597,34 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: uutils
+    source:
+      subdir: ports
+      git: 'https://github.com/uutils/coreutils'
+      commit: '439b7e0ca5580b733dc20ca1886c123234f23a24'
+      branch: 'master'
+      version: '0.0.6p1'
+    tools_required:
+      - host-cargo
+    sources_required:
+      - rust-patched-libs
+    configure:
+      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
+    build:
+      - args:
+        - 'cargo'
+        - 'install'
+        - '--locked'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--path'
+        - '@THIS_SOURCE_DIR@'
+        - '--root'
+        - '@THIS_COLLECT_DIR@'
+        - '-j@PARALLELISM@'
+        # - '--features'
+        # - 'unix'
+
   - name: which
     labels: [aarch64]
     source:

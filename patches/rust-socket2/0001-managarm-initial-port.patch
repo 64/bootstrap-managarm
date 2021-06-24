@@ -1,0 +1,24 @@
+From f5ea349ed969ef19bd5b8b8d73e21f2b614d142f Mon Sep 17 00:00:00 2001
+From: Matt Taylor <mstaveleytaylor@gmail.com>
+Date: Sat, 19 Jun 2021 16:30:51 +0100
+Subject: [PATCH] managarm: initial port
+
+---
+ src/sys/unix.rs | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/sys/unix.rs b/src/sys/unix.rs
+index 0704d4b..469ad38 100644
+--- a/src/sys/unix.rs
++++ b/src/sys/unix.rs
+@@ -169,6 +169,7 @@ type IovLen = usize;
+     target_os = "freebsd",
+     target_os = "fuchsia",
+     target_os = "illumos",
++    target_os = "managarm",
+     target_os = "netbsd",
+     target_os = "openbsd",
+     target_os = "solaris",
+-- 
+2.32.0
+

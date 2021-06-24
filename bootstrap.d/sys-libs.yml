@@ -17,6 +17,36 @@ sources:
     tag: 'v0.11.0'
     version: '0.11.0'
 
+  - name: rust-socket2
+    subdir: 'ports'
+    git: 'https://github.com/rust-lang/socket2'
+    tag: 'v0.4.0'
+    version: '0.4.0'
+
+  - name: rust-nix
+    subdir: 'ports'
+    git: 'https://github.com/nix-rust/nix'
+    tag: 'v0.21.0'
+    version: '0.21.0'
+
+  - name: rust-getrandom
+    subdir: 'ports'
+    git: 'https://github.com/rust-random/getrandom'
+    tag: 'v0.2.3'
+    version: '0.2.3'
+
+  - name: rust-filetime
+    subdir: 'ports'
+    git: 'https://github.com/alexcrichton/filetime'
+    tag: '0.2.14'
+    version: '0.2.14'
+
+  - name: rust-mio
+    subdir: 'ports'
+    git: 'https://github.com/tokio-rs/mio'
+    tag: 'v0.7.13'
+    version: '0.7.13'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -25,6 +55,16 @@ sources:
       - name: rust-num-cpus
         recursive: true
       - name: rust-users
+        recursive: true
+      - name: rust-socket2
+        recursive: true
+      - name: rust-nix
+        recursive: true
+      - name: rust-getrandom
+        recursive: true
+      - name: rust-filetime
+        recursive: true
+      - name: rust-mio
         recursive: true
 
 packages:
