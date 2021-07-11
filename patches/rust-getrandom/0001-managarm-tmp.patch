@@ -1,0 +1,97 @@
+From cd962b111ad71abf5bca58742cd17bda3be95411 Mon Sep 17 00:00:00 2001
+From: Matt Taylor <mstaveleytaylor@gmail.com>
+Date: Mon, 12 Jul 2021 00:04:23 +0100
+Subject: [PATCH] managarm: tmp
+
+---
+ src/lib.rs       |  5 +++++
+ src/managarm.rs  | 26 ++++++++++++++++++++++++++
+ src/use_file.rs  |  2 +-
+ src/util_libc.rs |  2 +-
+ 4 files changed, 33 insertions(+), 2 deletions(-)
+ create mode 100644 src/managarm.rs
+
+diff --git a/src/lib.rs b/src/lib.rs
+index 107b2d3..68ddf40 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -24,6 +24,7 @@
+ //! | Fuchsia OS        | `*‑fuchsia`        | [`cprng_draw`][11]
+ //! | Redox             | `*‑redox`          | [`rand:`][12]
+ //! | Haiku             | `*‑haiku`          | `/dev/random` (identical to `/dev/urandom`)
++//! | Managarm          | `*‑managarm`       | [`getrandom`][1] if available, otherwise [`/dev/urandom`][2]
+ //! | SGX               | `x86_64‑*‑sgx`     | [RDRAND][18]
+ //! | VxWorks           | `*‑wrs‑vxworks‑*`  | `randABytes` after checking entropy pool initialization with `randSecure`
+ //! | Emscripten        | `*‑emscripten`     | `/dev/random` (identical to `/dev/urandom`)
+@@ -187,6 +188,10 @@ cfg_if! {
+         mod util_libc;
+         mod use_file;
+         #[path = "dragonfly.rs"] mod imp;
++    } else if #[cfg(target_os = "managarm")] {
++        mod util_libc;
++        mod use_file;
++        #[path = "managarm.rs"] mod imp;
+     } else if #[cfg(target_os = "fuchsia")] {
+         #[path = "fuchsia.rs"] mod imp;
+     } else if #[cfg(target_os = "ios")] {
+diff --git a/src/managarm.rs b/src/managarm.rs
+new file mode 100644
+index 0000000..a910e51
+--- /dev/null
++++ b/src/managarm.rs
+@@ -0,0 +1,26 @@
++// Copyright 2021 Developers of the Rand project.
++//
++// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
++// https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
++// <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your
++// option. This file may not be copied, modified, or distributed
++// except according to those terms.
++
++//! Implementation for Managarm
++use crate::{
++    use_file,
++    util_libc::{sys_fill_exact, Weak},
++    Error,
++};
++
++pub fn getrandom_inner(dest: &mut [u8]) -> Result<(), Error> {
++    static GETRANDOM: Weak = unsafe { Weak::new("getrandom\0") };
++    type GetRandomFn = unsafe extern "C" fn(*mut u8, libc::size_t, libc::c_uint) -> libc::ssize_t;
++
++    if let Some(fptr) = GETRANDOM.ptr() {
++        let func: GetRandomFn = unsafe { core::mem::transmute(fptr) };
++        return sys_fill_exact(dest, |buf| unsafe { func(buf.as_mut_ptr(), buf.len(), 0) });
++    } else {
++        use_file::getrandom_inner(dest)
++    }
++}
+diff --git a/src/use_file.rs b/src/use_file.rs
+index 465c069..4f883ca 100644
+--- a/src/use_file.rs
++++ b/src/use_file.rs
+@@ -28,7 +28,7 @@ const FILE_PATH: &str = "rand:\0";
+     target_os = "illumos"
+ ))]
+ const FILE_PATH: &str = "/dev/random\0";
+-#[cfg(any(target_os = "android", target_os = "linux"))]
++#[cfg(any(target_os = "android", target_os = "linux", target_os = "managarm"))]
+ const FILE_PATH: &str = "/dev/urandom\0";
+ 
+ pub fn getrandom_inner(dest: &mut [u8]) -> Result<(), Error> {
+diff --git a/src/util_libc.rs b/src/util_libc.rs
+index 6823609..c813fe7 100644
+--- a/src/util_libc.rs
++++ b/src/util_libc.rs
+@@ -12,7 +12,7 @@ use core::{num::NonZeroU32, ptr::NonNull};
+ cfg_if! {
+     if #[cfg(any(target_os = "netbsd", target_os = "openbsd", target_os = "android"))] {
+         use libc::__errno as errno_location;
+-    } else if #[cfg(any(target_os = "linux", target_os = "emscripten", target_os = "redox"))] {
++    } else if #[cfg(any(target_os = "linux", target_os = "emscripten", target_os = "redox", target_os = "managarm"))] {
+         use libc::__errno_location as errno_location;
+     } else if #[cfg(any(target_os = "solaris", target_os = "illumos"))] {
+         use libc::___errno as errno_location;
+-- 
+2.32.0
+

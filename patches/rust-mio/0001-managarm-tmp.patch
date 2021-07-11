@@ -1,0 +1,106 @@
+From 7a56419bff2abab0cc2096217293954c072bab3f Mon Sep 17 00:00:00 2001
+From: Matt Taylor <mstaveleytaylor@gmail.com>
+Date: Mon, 12 Jul 2021 00:03:36 +0100
+Subject: [PATCH] managarm: tmp
+
+---
+ src/sys/unix/net.rs          | 1 +
+ src/sys/unix/pipe.rs         | 3 +++
+ src/sys/unix/selector/mod.rs | 2 ++
+ src/sys/unix/tcp.rs          | 1 +
+ src/sys/unix/waker.rs        | 4 ++--
+ 5 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/src/sys/unix/net.rs b/src/sys/unix/net.rs
+index 2f8d618..8f78d04 100644
+--- a/src/sys/unix/net.rs
++++ b/src/sys/unix/net.rs
+@@ -19,6 +19,7 @@ pub(crate) fn new_socket(domain: libc::c_int, socket_type: libc::c_int) -> io::R
+         target_os = "freebsd",
+         target_os = "illumos",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "openbsd"
+     ))]
+diff --git a/src/sys/unix/pipe.rs b/src/sys/unix/pipe.rs
+index ccf5252..e9df4c7 100644
+--- a/src/sys/unix/pipe.rs
++++ b/src/sys/unix/pipe.rs
+@@ -152,6 +152,7 @@ pub fn new() -> io::Result<(Sender, Receiver)> {
+         target_os = "dragonfly",
+         target_os = "freebsd",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "openbsd",
+         target_os = "illumos",
+@@ -188,12 +189,14 @@ pub fn new() -> io::Result<(Sender, Receiver)> {
+         target_os = "dragonfly",
+         target_os = "freebsd",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "openbsd",
+         target_os = "ios",
+         target_os = "macos",
+         target_os = "solaris",
+         target_os = "illumos",
++        target_os = "managarm"
+     )))]
+     compile_error!("unsupported target for `mio::unix::pipe`");
+ 
+diff --git a/src/sys/unix/selector/mod.rs b/src/sys/unix/selector/mod.rs
+index b73d645..0c75e7a 100644
+--- a/src/sys/unix/selector/mod.rs
++++ b/src/sys/unix/selector/mod.rs
+@@ -2,6 +2,7 @@
+     target_os = "android",
+     target_os = "illumos",
+     target_os = "linux",
++    target_os = "managarm",
+     target_os = "solaris"
+ ))]
+ mod epoll;
+@@ -10,6 +11,7 @@ mod epoll;
+     target_os = "android",
+     target_os = "illumos",
+     target_os = "linux",
++    target_os = "managarm",
+     target_os = "solaris"
+ ))]
+ pub(crate) use self::epoll::{event, Event, Events, Selector};
+diff --git a/src/sys/unix/tcp.rs b/src/sys/unix/tcp.rs
+index 59642c6..32855b5 100644
+--- a/src/sys/unix/tcp.rs
++++ b/src/sys/unix/tcp.rs
+@@ -439,6 +439,7 @@ pub fn accept(listener: &net::TcpListener) -> io::Result<(net::TcpStream, Socket
+         target_os = "freebsd",
+         target_os = "illumos",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "openbsd"
+     ))]
+diff --git a/src/sys/unix/waker.rs b/src/sys/unix/waker.rs
+index a7cf484..0e7af20 100644
+--- a/src/sys/unix/waker.rs
++++ b/src/sys/unix/waker.rs
+@@ -1,4 +1,4 @@
+-#[cfg(any(target_os = "linux", target_os = "android"))]
++#[cfg(any(target_os = "linux", target_os = "android", target_os = "managarm"))]
+ mod eventfd {
+     use crate::sys::Selector;
+     use crate::{Interest, Token};
+@@ -58,7 +58,7 @@ mod eventfd {
+     }
+ }
+ 
+-#[cfg(any(target_os = "linux", target_os = "android"))]
++#[cfg(any(target_os = "linux", target_os = "android", target_os = "managarm"))]
+ pub use self::eventfd::Waker;
+ 
+ #[cfg(any(target_os = "freebsd", target_os = "ios", target_os = "macos"))]
+-- 
+2.32.0
+

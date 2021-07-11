@@ -1,0 +1,24 @@
+From 5191270bc7632ae2888c1926706c8fda289c57fd Mon Sep 17 00:00:00 2001
+From: Matt Taylor <mstaveleytaylor@gmail.com>
+Date: Mon, 12 Jul 2021 00:03:59 +0100
+Subject: [PATCH] managarm: tmp
+
+---
+ src/unix/mod.rs | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/unix/mod.rs b/src/unix/mod.rs
+index 66f9fc2..15e59b9 100644
+--- a/src/unix/mod.rs
++++ b/src/unix/mod.rs
+@@ -21,6 +21,7 @@ cfg_if::cfg_if! {
+                         target_os = "freebsd",
+                         target_os = "netbsd",
+                         target_os = "openbsd",
++                        target_os = "managarm",
+                         target_os = "haiku"))] {
+         mod utimensat;
+         pub use self::utimensat::*;
+-- 
+2.32.0
+

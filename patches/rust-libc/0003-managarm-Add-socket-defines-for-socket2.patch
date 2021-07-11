@@ -1,7 +1,7 @@
 From 8500b69e8ddc57d59182720b49be0c0d99c93137 Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Sat, 19 Jun 2021 16:03:24 +0100
-Subject: [PATCH 3/3] managarm: Add socket defines for socket2
+Subject: [PATCH 3/4] managarm: Add socket defines for socket2
 
 ---
  src/unix/mlibc/mod.rs | 83 ++++++++++++++++++++++++++++++++++++++-----
